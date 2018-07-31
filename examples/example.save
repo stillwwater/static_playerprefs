@@ -1,0 +1,10 @@
+# The SaveGame file
+
+:PlayerData
+name       Foo
+level      32
+experience 69105
+
+:World     # Same as WorldData in Player.cs
+time       100.0
+is_raining True
