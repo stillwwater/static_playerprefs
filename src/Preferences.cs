@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Framework
+namespace StaticPref
 {
     public struct VariablePairInfo
     {
@@ -28,6 +28,12 @@ namespace Framework
 
         public Preferences(string filepath) {
             source_filepath = filepath;
+        }
+
+        public static Preferences Load(string filepath) {
+            var pref = new Preferences(filepath);
+            pref.Load();
+            return pref;
         }
 
         public void Load() {

@@ -18,8 +18,9 @@
 ///
 
 using UnityEngine;
+using StaticPref;
 
-namespace Framework
+namespace Example
 {
     public struct PlayerData
     {
