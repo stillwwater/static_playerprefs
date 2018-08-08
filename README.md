@@ -27,8 +27,7 @@ Preferences savegame;
 WorldData world;
 
 void Awake() {
-    savegame = new Preferences("main.save");
-    savegame.Load();
+    savegame = Preferences.Load("main.save");
 }
 
 void Start() {
