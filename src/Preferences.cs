@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Text;
-using System.Threading;
 using System.Reflection;
 using System.Collections.Generic;
 using UnityEngine;
@@ -135,7 +134,10 @@ namespace StaticPref
                     } else {
                         Error(pair.line_number, "Expected an int value");
                     }
-                } else if (member_type == typeof(float)) {
+                    continue;
+                }
+
+                if (member_type == typeof(float)) {
                     float parsed_float;
 
                     if (float.TryParse(pair.value, out parsed_float)) {
@@ -143,7 +145,10 @@ namespace StaticPref
                     } else {
                         Error(pair.line_number, "Expected a float value");
                     }
-                } else if (member_type == typeof(bool)) {
+                    continue;
+                }
+
+                if (member_type == typeof(bool)) {
                     if (pair.value[0] == 't' || pair.value[0] == 'T') {
                         member.SetValue(value, true);
                     } else if (pair.value[0] == 'f' || pair.value[0] == 'F') {
@@ -151,11 +156,27 @@ namespace StaticPref
                     } else {
                         Error(pair.line_number, "Expected a bool value");
                     }
-                } else if (member_type == typeof(string)) {
-                    member.SetValue(value, pair.value);
-                } else {
-                    Error(pair.line_number, "The type '{0}' is not supported by preferences, ", member_type);
+                    continue;
                 }
+
+                if (member_type == typeof(string)) {
+                    if (pair.value[0] == '"') {
+                        // Quoted string
+                        int closing_quote = pair.value.Length - 1;
+
+                        if (pair.value[closing_quote] != '"') {
+                            Error(pair.line_number, "Missing end quote");
+                        } else {
+                            member.SetValue(value, pair.value.Substring(1, closing_quote - 1));
+                        }
+                    } else {
+                        // Unquoted string, valid
+                        member.SetValue(value, pair.value);
+                    }
+                    continue;
+                }
+
+                Error(pair.line_number, "The type '{0}' is not supported by preferences, ", member_type);
             }
 
             return value;
